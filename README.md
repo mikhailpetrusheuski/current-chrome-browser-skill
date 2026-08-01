@@ -1,5 +1,8 @@
 # Current Chrome Browser Skill for Claude Code
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Claude Code Skill](https://img.shields.io/badge/Claude_Code-Skill-blue.svg)](SKILL.md)
+
 A safety-focused Claude Code skill for operating the Chrome window you already
 use through Microsoft's extension-backed Playwright MCP server.
 
@@ -25,13 +28,13 @@ software. It requires the official Playwright MCP server and browser extension.
 - Claude Code CLI
 - Node.js 20 or newer
 - Google Chrome or Microsoft Edge
-- Official Playwright MCP browser extension
+- [Official Playwright MCP browser extension][playwright-extension]
 - Official `@playwright/mcp` server configured with `--extension`
 
 ## Configure Playwright MCP
 
-Install the extension using the official Playwright documentation, then add the
-server to Claude Code.
+Install the extension using the [official Playwright documentation][playwright-extension],
+then add the server to Claude Code.
 
 Windows:
 
@@ -60,16 +63,19 @@ Personal installation makes the skill available in every project.
 PowerShell:
 
 ```powershell
+$repo = Join-Path $env:TEMP "current-chrome-browser-skill"
+git clone https://github.com/mikhailpetrusheuski/current-chrome-browser-skill $repo
 $target = Join-Path $HOME ".claude\skills\current-chrome-browser"
 New-Item $target -ItemType Directory -Force | Out-Null
-Copy-Item .\SKILL.md (Join-Path $target "SKILL.md") -Force
+Copy-Item (Join-Path $repo "SKILL.md") (Join-Path $target "SKILL.md") -Force
 ```
 
 Bash:
 
 ```bash
+git clone https://github.com/mikhailpetrusheuski/current-chrome-browser-skill /tmp/current-chrome-browser-skill
 mkdir -p ~/.claude/skills/current-chrome-browser
-cp SKILL.md ~/.claude/skills/current-chrome-browser/SKILL.md
+cp /tmp/current-chrome-browser-skill/SKILL.md ~/.claude/skills/current-chrome-browser/SKILL.md
 ```
 
 For one project, copy `SKILL.md` to:
@@ -110,6 +116,13 @@ websites available in the selected browser tab. Keep Claude Code confirmation
 prompts enabled and read [SECURITY.md](SECURITY.md) before using sensitive
 accounts.
 
+Learn more in the official [Claude Code skills documentation][claude-skills]
+and [Playwright MCP guide][playwright-mcp].
+
 ## License
 
 MIT
+
+[claude-skills]: https://code.claude.com/docs/en/slash-commands
+[playwright-extension]: https://playwright.dev/mcp/configuration/browser-extension
+[playwright-mcp]: https://playwright.dev/docs/getting-started-mcp
