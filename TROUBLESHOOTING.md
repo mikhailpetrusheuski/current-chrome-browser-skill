@@ -213,8 +213,8 @@ selection, paragraph structure collapses, or site syntax rewrites text.
 
 **Response:** focus the editor, select all through trusted keyboard input,
 delete, insert the corrected content, and verify exact phrases in the resulting
-accessibility tree. Recheck auto-linked text; for example, Reddit may convert an
-`@package/name` string into a user mention.
+accessibility tree. Recheck auto-linked text because some platforms reinterpret
+`@name` syntax as a user mention.
 
 ### Tool reports success but the application did not save
 
@@ -274,17 +274,17 @@ retry it.
 Stop immediately. Do not switch account, browser, profile, endpoint, or posting
 path. Record unfinished work and resume only when the platform allows it.
 
-### Reddit classifies the account as bot-like
+### A platform classifies the account as bot-like
 
-**Symptoms:** a post succeeds, but Reddit or a subreddit later bans the account
-with a BotBouncer or similar automated anti-abuse notice.
+**Symptoms:** an action succeeds, but the platform or a community later
+restricts the account through an automated anti-abuse classification.
 
-**Response:** stop all Reddit posting automation. Do not use another account to
-circumvent the ban. Follow the appeal destination in the notice manually and
-describe the account's legitimate human use accurately. Until the restriction
-is resolved, automation may only help draft text outside Reddit. For future
-Reddit work, this skill may prepare the composer but must leave the final submit
-action to the user.
+**Response:** stop automation on that platform. Do not use another account to
+circumvent the restriction. Follow the appeal destination in the notice
+manually and describe the account's legitimate human use accurately. Until the
+restriction is resolved, automation may only help draft content outside the
+platform. For future work on services that restrict automation, this skill may
+prepare the form but must leave the final submit action to the user.
 
 ## Security
 

@@ -1,0 +1,29 @@
+{
+  "name": "current-chrome-browser-guard",
+  "version": "0.1.0",
+  "description": "Local guardrails for extension-backed Playwright MCP browser actions",
+  "type": "module",
+  "bin": {
+    "browser-guard": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "GUARD.md",
+    "README.md",
+    "SKILL.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "prepare": "npm run build",
+    "test": "npm run build && node --test dist/test/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  },
+  "license": "MIT"
+}

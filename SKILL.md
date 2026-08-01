@@ -70,6 +70,8 @@ diagnosis. Never fix transport or UI failures by weakening the Browser Boundary.
 3. Select the existing tab matching the request. Preserve unrelated tabs.
 4. Read an accessibility snapshot of the selected tab.
 5. Confirm the URL, title, account or login state, and relevant visible UI.
+6. If the companion guard from this repository is installed, create a tab lease
+   with the verified tab index, URL, title, and account.
 
 When multiple tabs are plausible, ask which tab to use before an action that
 can send, submit, publish, purchase, delete, or modify remote data.
@@ -93,10 +95,10 @@ Reading, navigating, opening menus, and filling an unsent form are reversible
 preparation. Sending, publishing, posting, purchasing, deleting, approving, or
 submitting creates an external side effect.
 
-For Reddit, automation may prepare the post and open the correct composer, but
-the user must review and perform the final submission manually. Automated or
-bot-like posting can trigger account-level anti-abuse classification even when
-the UI accepts the post.
+On platforms that restrict automated or bot-like activity, automation may
+prepare the form but the user must review and perform the final submission
+manually. A successful UI action does not guarantee that a later anti-abuse
+classification will not occur.
 
 Before a side effect:
 
@@ -104,8 +106,13 @@ Before a side effect:
 2. Verify the exact account, destination, recipient, item, and payload in the
    visible UI.
 3. Verify previews and public versus private URLs where relevant.
-4. Perform the action exactly once.
-5. Capture the resulting confirmation and result URL or identifier.
+4. If the companion guard is installed, verify the tab lease and prepare a
+   one-time action permit. Never pass `--authorized` without explicit current-
+   conversation authorization.
+5. Perform the action exactly once.
+6. Capture the resulting confirmation and result URL or identifier.
+7. Commit the guard permit only after confirmation. If the action was not
+   performed, abort it with a reason. Leave ambiguous outcomes uncommitted.
 
 Never retry an ambiguous submission. Inspect the UI for evidence that the first
 attempt succeeded. If certainty is not possible, stop to avoid duplicates.
@@ -128,7 +135,7 @@ Stop without bypass or retry when the page shows:
 - CAPTCHA or another platform challenge;
 - rate, posting, or usage limit;
 - moderation or approval that already confirms submission;
-- an account restriction, subreddit ban, or bot-classification notice;
+- an account restriction, community ban, or bot-classification notice;
 - an unexpected destination or account;
 - an ambiguous result that could cause a duplicate side effect.
 

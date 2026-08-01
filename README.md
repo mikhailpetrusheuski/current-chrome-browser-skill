@@ -21,7 +21,9 @@ side effects, and stop on login challenges, limits, or ambiguous submissions.
 - Supports long autosaved editors with reload verification.
 
 This repository contains an instruction layer, not browser automation
-software. It requires the official Playwright MCP server and browser extension.
+software. It also includes an optional local companion CLI that records tab
+leases and guards external side effects. It requires the official Playwright
+MCP server and browser extension.
 
 ## Prerequisites
 
@@ -108,6 +110,24 @@ automatically. Access to an authenticated browser remains under explicit user
 control.
 
 See [EXAMPLES.md](EXAMPLES.md) for more prompts and expected behavior.
+
+## Optional Companion Guard
+
+The TypeScript CLI adds machine-checkable workflow state without controlling
+the browser or reading its session:
+
+```bash
+npm install
+npm run build
+node dist/cli.js preflight
+```
+
+It can bind work to a selected tab, require an explicit authorization flag,
+detect a repeated committed payload, and append confirmation records. Raw
+payload content is never written to its ledger. State stays in the ignored
+`.browser-guard/` directory.
+
+See [GUARD.md](GUARD.md) for the command contract and integration workflow.
 
 For connection failures, stale refs, large snapshots, shadow DOM, file uploads,
 parallel-agent interference, editor corruption, and ambiguous submissions, see
