@@ -38,16 +38,23 @@ MCP server and browser extension.
 Install the extension using the [official Playwright documentation][playwright-extension],
 then add the server to Claude Code.
 
+Give the server a distinct name such as `playwright-chrome`. Do not call it
+`playwright`: plugins and marketplaces ship their own Playwright MCP servers,
+those run a clean launched profile, and their tools carry the same names as
+these. Two servers named alike are indistinguishable at the point of use, and
+picking the wrong one does not raise an error — it returns a blank page or a
+login screen from a profile that is not yours.
+
 Windows:
 
 ```powershell
-claude mcp add playwright -- cmd /c npx -y @playwright/mcp@latest --extension
+claude mcp add playwright-chrome -- cmd /c npx -y @playwright/mcp@latest --extension
 ```
 
 macOS or Linux:
 
 ```bash
-claude mcp add playwright -- npx -y @playwright/mcp@latest --extension
+claude mcp add playwright-chrome -- npx -y @playwright/mcp@latest --extension
 ```
 
 Restart Claude Code and verify the connection:
@@ -57,6 +64,11 @@ claude mcp list
 ```
 
 Use `/mcp` inside Claude Code to approve the server when prompted.
+
+If another browser MCP server is already configured, remove or disable it for
+the duration of authenticated browser work. The skill can be told which server
+to trust, but it cannot recover the time lost to a wrong call that looked like
+an empty page.
 
 ## Install The Skill
 
@@ -86,8 +98,13 @@ For one project, copy `SKILL.md` to:
 <project>/.claude/skills/current-chrome-browser/SKILL.md
 ```
 
+A project installation is visible only inside that project. In a multi-repository
+workspace, place it at the workspace root that Claude Code opens, not in a
+nested repository, or the skill will not be listed.
+
 Restart Claude Code if `.claude/skills` did not exist when the current session
-started.
+started. Until the restart the skill is absent from the session, and asking for
+it reports an unknown skill rather than a pending installation.
 
 ## Usage
 
@@ -108,6 +125,11 @@ Invoke the skill explicitly:
 The skill has `disable-model-invocation: true`, so Claude cannot invoke it
 automatically. Access to an authenticated browser remains under explicit user
 control.
+
+This is deliberate, and it has a confusing symptom: if Claude tries to invoke
+the skill on its own it is told the skill is unknown, which reads as a broken
+installation. Only the user typing `/current-chrome-browser` starts it. Ask the
+user to run the command rather than diagnosing the installation.
 
 See [EXAMPLES.md](EXAMPLES.md) for more prompts and expected behavior.
 

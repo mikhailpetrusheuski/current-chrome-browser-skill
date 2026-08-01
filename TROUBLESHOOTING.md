@@ -107,6 +107,35 @@ or executable path. Relevant history:
 
 ## Connection And Tab State
 
+### Tools work but the page is blank or logged out
+
+**Symptoms:** every call succeeds, yet the tab list holds one `about:blank` or
+a new-tab page, snapshots come back nearly empty, and an authenticated site
+shows its login screen even though the same site is signed in on screen.
+
+**Cause:** the call went to a second Playwright MCP server that launches its own
+clean profile. Plugin- and marketplace-provided servers expose tools with names
+identical to the extension server's, so both appear as, for example,
+`browser_snapshot` under different prefixes. Nothing errors, because the wrong
+server is working correctly on a browser that has none of the user's state.
+
+**Response:** compare the server prefix on the failing call against the one
+whose tab list showed the user's real tabs. Reissue against that prefix. Name
+the extension server distinctly, such as `playwright-chrome`, and disable the
+competing server for authenticated work.
+
+### Navigation succeeds but lands on the wrong page
+
+**Symptoms:** a constructed URL returns success, and the snapshot shows a
+dashboard, app picker, or account chooser instead of the requested view.
+
+**Cause:** single-page consoles answer an unrecognized path with a client-side
+redirect to a default view. The HTTP result is a normal load.
+
+**Response:** confirm page identity by heading or title after every navigation.
+Reach deep views by clicking the application's own navigation rather than by
+assembling paths, and treat a redirect as a failed step, not a slow one.
+
 ### Target page, context, or browser has been closed
 
 **Response:** Call tab listing again, wait briefly, and retry tab listing once.

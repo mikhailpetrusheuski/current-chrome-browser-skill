@@ -54,11 +54,20 @@ transport, not proof that the previous page state or side effect persisted.
 When a browser action fails:
 
 1. Confirm the MCP server still runs in extension mode.
-2. List tabs and verify the selected URL is not an extension connect page.
-3. Take a fresh snapshot and discard every previous element ref.
-4. Retry only a reversible read or navigation step once.
-5. Reduce to one client, one browser agent, and one selected tab.
-6. Stop rather than retry if an external side effect may already have happened.
+2. Confirm the failing call used the verified server prefix and not a
+   same-named tool from another browser MCP server.
+3. List tabs and verify the selected URL is not an extension connect page.
+4. Take a fresh snapshot and discard every previous element ref.
+5. Retry only a reversible read or navigation step once.
+6. Reduce to one client, one browser agent, and one selected tab.
+7. Stop rather than retry if an external side effect may already have happened.
+
+A page that loads but shows the wrong content is a failure too. Single-page
+consoles answer an unknown path with a silent redirect to a default view, so a
+hand-constructed URL can succeed at the transport level and land somewhere
+else. Navigate by clicking the application's own links where possible, and
+after any navigation confirm the page identity by its heading or title, never
+by the tool's success response alone.
 
 Use `TROUBLESHOOTING.md` from this skill repository for symptom-specific
 diagnosis. Never fix transport or UI failures by weakening the Browser Boundary.
@@ -67,14 +76,37 @@ diagnosis. Never fix transport or UI failures by weakening the Browser Boundary.
 
 1. Identify the concrete browser goal and any external side effect.
 2. List the tabs exposed by Playwright MCP.
-3. Select the existing tab matching the request. Preserve unrelated tabs.
-4. Read an accessibility snapshot of the selected tab.
-5. Confirm the URL, title, account or login state, and relevant visible UI.
-6. If the companion guard from this repository is installed, create a tab lease
+3. Verify the tab list proves the extension bridge, not a clean profile. A real
+   current-Chrome session shows the user's own tabs. A single `about:blank`, a
+   lone new-tab page, or an extension connect page means the call reached a
+   launched-profile server. Stop and switch to the extension-backed server
+   rather than continuing.
+4. Select the existing tab matching the request. Preserve unrelated tabs. When
+   no tab matches, open a new tab. Never navigate an unrelated existing tab
+   away from what the user left there.
+5. Read an accessibility snapshot of the selected tab.
+6. Confirm the URL, title, account or login state, and relevant visible UI.
+7. If the companion guard from this repository is installed, create a tab lease
    with the verified tab index, URL, title, and account.
 
 When multiple tabs are plausible, ask which tab to use before an action that
 can send, submit, publish, purchase, delete, or modify remote data.
+
+When several browser MCP servers are configured, every tool exists under more
+than one server prefix and the wrong one fails silently by returning a blank
+page instead of an error. Read the server prefix on each browser tool call and
+keep using the one whose tab list was verified in step 3.
+
+## Read-Only Fast Path
+
+Listing tabs, navigating, snapshotting, finding text, hovering, and taking
+screenshots are reversible. They need the verification in Start Every Task and
+nothing more: no authorization, no tab lease, no permit.
+
+Escalate to the full External Side Effects procedure as soon as the task
+reaches a control that sends, submits, publishes, purchases, deletes, approves,
+or changes remote state. Preparing that control is still reversible; operating
+it is not.
 
 ## Interaction Method
 
@@ -88,6 +120,11 @@ can send, submit, publish, purchase, delete, or modify remote data.
 6. Fill one logical field at a time and verify its value.
 7. Wait for previews, autosave, validation, or loading indicators.
 8. Use screenshots for visual verification, not coordinate-based interaction.
+9. When a snapshot or screenshot is written to a file, direct it to a scratch
+   or temporary directory and delete it when the task ends. Playwright MCP
+   resolves a bare filename against its own output directory, which is often
+   the working repository, so an unqualified name leaves untracked files in the
+   user's project.
 
 ## External Side Effects
 
