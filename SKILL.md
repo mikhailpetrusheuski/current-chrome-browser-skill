@@ -32,6 +32,23 @@ If the extension-backed MCP tools or intended current Chrome tab are not
 available, stop and state the missing prerequisite. Do not silently substitute
 a different browser path.
 
+## Connection Recovery
+
+If a normal browser tool reports that the target page, context, or browser has
+been closed:
+
+1. Do not launch a browser or switch to another automation path.
+2. Call the MCP tab-listing tool again. The extension bridge may restore the
+   current Chrome connection on the next normal tool call.
+3. If the first retry fails, wait briefly and retry tab listing one more time.
+4. If tabs reappear, select the intended existing tab, take a fresh snapshot,
+   verify its URL and title, and continue from the last confirmed browser state.
+5. If both retries fail, stop and ask the user to reconnect a Chrome tab through
+   the Playwright MCP extension.
+
+Never reuse element references from before a disconnect. Recovery restores the
+transport, not proof that the previous page state or side effect persisted.
+
 ## Start Every Task
 
 1. Identify the concrete browser goal and any external side effect.
