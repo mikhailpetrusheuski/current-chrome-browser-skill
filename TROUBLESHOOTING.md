@@ -207,6 +207,18 @@ retry it.
 Stop immediately. Do not switch account, browser, profile, endpoint, or posting
 path. Record unfinished work and resume only when the platform allows it.
 
+### Reddit classifies the account as bot-like
+
+**Symptoms:** a post succeeds, but Reddit or a subreddit later bans the account
+with a BotBouncer or similar automated anti-abuse notice.
+
+**Response:** stop all Reddit posting automation. Do not use another account to
+circumvent the ban. Follow the appeal destination in the notice manually and
+describe the account's legitimate human use accurately. Until the restriction
+is resolved, automation may only help draft text outside Reddit. For future
+Reddit work, this skill may prepare the composer but must leave the final submit
+action to the user.
+
 ## Security
 
 ### Arbitrary browser code is process-level code execution

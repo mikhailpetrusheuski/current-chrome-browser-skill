@@ -93,6 +93,11 @@ Reading, navigating, opening menus, and filling an unsent form are reversible
 preparation. Sending, publishing, posting, purchasing, deleting, approving, or
 submitting creates an external side effect.
 
+For Reddit, automation may prepare the post and open the correct composer, but
+the user must review and perform the final submission manually. Automated or
+bot-like posting can trigger account-level anti-abuse classification even when
+the UI accepts the post.
+
 Before a side effect:
 
 1. Require explicit authorization in the current conversation.
@@ -123,6 +128,7 @@ Stop without bypass or retry when the page shows:
 - CAPTCHA or another platform challenge;
 - rate, posting, or usage limit;
 - moderation or approval that already confirms submission;
+- an account restriction, subreddit ban, or bot-classification notice;
 - an unexpected destination or account;
 - an ambiguous result that could cause a duplicate side effect.
 
