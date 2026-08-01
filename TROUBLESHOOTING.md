@@ -24,6 +24,46 @@ older versions, but their symptoms remain useful for diagnosis.
 
 ## Installation And Startup
 
+### Browser executable and package versions do not match
+
+**Symptoms:** the browser cannot launch after a Playwright upgrade, the expected
+browser revision is missing, or behavior differs between the workstation and a
+container.
+
+**Response:** install browsers with the same Playwright package version that
+runs the automation. In CI, use the matching official Playwright image or run
+the documented browser installation step. Do not repair revision mismatches
+with ad hoc cache symlinks. Custom browser packaging was the underlying problem
+in [playwright#36360](https://github.com/microsoft/playwright/issues/36360).
+
+### Headed browser has no display server
+
+**Symptoms:** Chromium never appears or exits immediately under Linux, WSL, SSH,
+or a container, while headless mode works.
+
+**Response:** a headed browser needs a working display server and the MCP
+process must receive the relevant environment variables, such as `DISPLAY`.
+This was a reported cause of extension connection failures in
+[playwright-mcp#990](https://github.com/microsoft/playwright-mcp/issues/990).
+
+### Browser profile is already in use
+
+**Symptoms:** startup fails with `Browser is already in use` for the MCP profile.
+
+**Response:** first find and stop the previous owning MCP client cleanly. Do not
+delete an active profile directory. Isolated profiles permit concurrent test
+browsers but do not attach to the user's current authenticated Chrome session.
+Container-specific reports include
+[playwright-mcp#942](https://github.com/microsoft/playwright-mcp/issues/942).
+
+### Chrome processes remain after the client dies
+
+An abruptly killed MCP client can leave an orphan browser process tree or a
+profile lock. Close the owning process cleanly before restarting the workflow;
+do not run multiple cleanup attempts concurrently. This lifecycle problem is
+tracked in
+[playwright-mcp#1634](https://github.com/microsoft/playwright-mcp/issues/1634).
+
 ### MCP server is disconnected on Windows
 
 **Symptoms:** Claude Code lists the server as disconnected, tool calls hang, or
@@ -106,6 +146,15 @@ Chrome session. Do not parallelize side effects. Historical reports include
 Isolated contexts solve a different problem and violate this skill's
 current-session-only boundary.
 
+### A click opens a popup or changes frame
+
+Popups are separate Playwright pages, and iframe content belongs to a separate
+frame. If the expected control disappears after a click, list tabs first, then
+inspect the selected page and its accessible frames. Do not keep using refs
+from the opener. See Playwright's official
+[pages](https://playwright.dev/docs/pages) and
+[frames](https://playwright.dev/docs/frames) guides.
+
 ## Snapshots And Element References
 
 ### Element ref stops working
@@ -184,6 +233,24 @@ upstream explanation is in
 [playwright-mcp#1481](https://github.com/microsoft/playwright-mcp/issues/1481).
 Where the site supports it, a normal drag-and-drop operation can be more
 reliable. Never broaden file access merely to avoid asking the user.
+
+### Saved authentication is incomplete
+
+Playwright storage state covers cookies, local storage, and IndexedDB, but not
+ordinary session storage. A site can therefore appear logged out even when the
+saved state file is valid. The extension-backed current-Chrome workflow avoids
+exporting state, but reconnecting to another tab or profile still does not
+transfer session storage. See the official
+[authentication guide](https://playwright.dev/docs/auth#session-storage).
+
+### Network requests are missing
+
+A Service Worker can satisfy or own requests before page-level routing sees
+them. Inspect context-level requests and Service Workers before concluding that
+the request did not happen. Blocking Service Workers can simplify controlled
+tests, but is inappropriate when operating a user's live session because it
+changes site behavior. See Playwright's
+[network guide](https://playwright.dev/docs/network#missing-network-events-and-service-workers).
 
 ## External Side Effects
 
