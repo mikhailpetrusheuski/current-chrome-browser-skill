@@ -49,6 +49,20 @@ been closed:
 Never reuse element references from before a disconnect. Recovery restores the
 transport, not proof that the previous page state or side effect persisted.
 
+## Diagnostic Ladder
+
+When a browser action fails:
+
+1. Confirm the MCP server still runs in extension mode.
+2. List tabs and verify the selected URL is not an extension connect page.
+3. Take a fresh snapshot and discard every previous element ref.
+4. Retry only a reversible read or navigation step once.
+5. Reduce to one client, one browser agent, and one selected tab.
+6. Stop rather than retry if an external side effect may already have happened.
+
+Use `TROUBLESHOOTING.md` from this skill repository for symptom-specific
+diagnosis. Never fix transport or UI failures by weakening the Browser Boundary.
+
 ## Start Every Task
 
 1. Identify the concrete browser goal and any external side effect.

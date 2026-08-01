@@ -109,6 +109,10 @@ control.
 
 See [EXAMPLES.md](EXAMPLES.md) for more prompts and expected behavior.
 
+For connection failures, stale refs, large snapshots, shadow DOM, file uploads,
+parallel-agent interference, editor corruption, and ambiguous submissions, see
+[TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+
 ## Security
 
 The skill is not a sandbox. Playwright MCP can interact with authenticated
